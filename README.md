@@ -7,7 +7,11 @@ php -r "unlink('composer-setup.php');"
 
 php artisan serve
 
+user php artisan to run comands 
 
+i.e php artisan tinker
+
+starts a php shell env
 
 ## About Laravel
 
