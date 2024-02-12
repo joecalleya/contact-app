@@ -36,12 +36,9 @@ Route::get('/contacts/create', function () {
 
 Route::get('/contacts/{id}', function ($id) {
     $contacts = getContacts();
+    abort_if(!isset($contacts[$id]), 404);
     $contact = $contacts[$id];
+
     return view('contacts.show')->with('contact',$contact);;
 
 })->name('contacts.show');
-
-Route::fallback(function(){
-
-    return '<h1>This page doesnt exist</h1>';
-});
