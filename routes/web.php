@@ -13,13 +13,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+function getContacts(){
+     return[
+        1 => ['name'=> 'Joe', 'phone' => '12345678990'],
+        2 => ['name'=> 'jake', 'phone' => '12345678990'],
+        3 => ['name'=> 'john', 'phone' => '12345678990'],
+    ];
+}
 
+Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('/contacts', function () {
-    return view('contacts.index');
+    $contacts= getContacts();
+    return view('contacts.index',compact('contacts'));
 })->name('contacts.index');
 
 Route::get('/contacts/create', function () {
@@ -27,7 +35,10 @@ Route::get('/contacts/create', function () {
 })->name('contacts.create');
 
 Route::get('/contacts/{id}', function ($id) {
-    return "contact " . $id;
+    $contacts = getContacts();
+    $contact = $contacts[$id];
+    return view('contacts.show')->with('contact',$contact);;
+
 })->name('contacts.show');
 
 Route::fallback(function(){
