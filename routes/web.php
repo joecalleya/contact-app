@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,42 +18,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-function getContacts(){
-     return[
-        1 => [ 'id' => '1', 'name'=> 'Joe', 'phone' => '12345678990'],
-        2 => [ 'id' => '2',  'name'=> 'jake', 'phone' => '12345678990'],
-        3 => [ 'id' => '3',  'name'=> 'john', 'phone' => '12345678990'],
-    ];
-}
-
 Route::get('/', function () {
-
     return view('welcome');
 });
 
+route::controller(ContactController::class)->name('contacts.')->group(function(){
+    Route::get('/contacts', [ContactController::class, 'index'])->name('index');
+    Route::get('/contacts/create', [ContactController::class, 'createContacts'])->name('create');
+    Route::get('/contacts/{id}', [ContactController::class, 'showContacts'])->name('show');
+});
 
-Route::get('/contacts', function () {
-    $companies = [
-        1 => ['name' => 'Company One' , 'contacts' => 3],
-        2 =>  ['name' => 'Company Two' , 'contacts' => 5]
-    ];
-    $contacts= getContacts();
-    return view('contacts.index',compact('contacts','companies'));
-    })
-    ->name('contacts.index');
+route::resource('/companies',CompanyController::class);
+route::resources
+    ([
+        '/tags' => TagController::class,
+        '/tasks' => TaskController::class
+    ]);
 
-Route::get('/contacts/create', function () {
-
-    return view('contacts.create');
-
-})->name('contacts.create');
-
-Route::get('/contacts/{id}', function ($id) {
-
-    $contacts = getContacts();
-    abort_if(!isset($contacts[$id]), 404);
-    $contact = $contacts[$id];
-
-    return view('contacts.show')->with('contact',$contact);;
-
-})->name('contacts.show');
+Route::resource('/activities', ActivityController::class)->except([
+    'except','store','edit', 'update', 'destroy'
+]);
