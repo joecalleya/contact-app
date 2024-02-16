@@ -40,3 +40,14 @@ Route::resource('/activities', ActivityController::class)->except([
     'except','store','edit', 'update', 'destroy'
 ]);
 route::resource('/contacts.note', ContactNoteController::class)->shallow();
+
+// rename
+Route::resource('/activities', ActivityController::class)->names([
+    'index' => 'activities.all',
+    'show' => 'activities.view'
+]);
+
+// rename
+Route::resource('/activities', ActivityController::class)->parameters([
+    'activities' => 'active'
+]);
