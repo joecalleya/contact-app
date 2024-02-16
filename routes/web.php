@@ -5,6 +5,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactNoteController;
 use App\Http\Controllers\TagController;
 
 /*
@@ -38,3 +39,4 @@ route::resources
 Route::resource('/activities', ActivityController::class)->except([
     'except','store','edit', 'update', 'destroy'
 ]);
+route::resource('/contacts.note', ContactNoteController::class)->shallow();
