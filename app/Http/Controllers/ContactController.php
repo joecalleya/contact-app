@@ -17,22 +17,12 @@ class ContactController extends Controller
     {
         $companies = $this->company->pluck();
         // here we get the data
-        $contacts = contract::atest();
+        $contacts = Contact::Latest()->get();
         return view('contacts.index' ,  compact('contacts','companies'));
     }
-     private function getContacts()
-     {
-        return[
-            1 => [ 'id' => '1', 'name'=> 'Joe', 'phone' => '12345678990'],
-            2 => [ 'id' => '2',  'name'=> 'jake', 'phone' => '12345678990'],
-            3 => [ 'id' => '3',  'name'=> 'john', 'phone' => '12345678990'],
-        ];
-    }
-    public function showContacts($id)
+    public function show($id)
     {
-        $contacts = $this->getContacts();
-        abort_unless(isset($contacts[$id]), 404);
-        $contact = $contacts[$id];
+        $contact = Contact::findOrFail($id);
         return view('contacts.show')->with('contact',$contact);
     }
     public function createContacts()
