@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
-
+//import contracts  model
+use App\Models\Contact;
 class ContactController extends Controller
 {
     protected $company;
@@ -15,7 +16,8 @@ class ContactController extends Controller
     public function index(CompanyRepository $company)
     {
         $companies = $this->company->pluck();
-        $contacts = $this->getContacts();
+        // here we get the data
+        $contacts = contract::atest();
         return view('contacts.index' ,  compact('contacts','companies'));
     }
      private function getContacts()
