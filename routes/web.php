@@ -25,8 +25,8 @@ Route::get('/', function () {
 
 route::controller(ContactController::class)->name('contacts.')->group(function(){
     Route::get('/contacts', [ContactController::class, 'index'])->name('index');
-    Route::get('/contacts/create', [ContactController::class, 'createContacts'])->name('create');
-    Route::get('/contacts/{id}', [ContactController::class, 'showContacts'])->name('show');
+    Route::get('/contacts/create', [ContactController::class, 'create'])->name('create');
+    Route::get('/contacts/{id}', [ContactController::class, 'show'])->name('show');
 });
 
 route::resource('/companies',CompanyController::class);

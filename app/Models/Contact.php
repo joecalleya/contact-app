@@ -10,4 +10,10 @@ class Contact extends Model
     use HasFactory;
     protected $fillable = [ 'first_name','last_name','email','phone', 'address'];
 
+    public function company()
+    {
+        // we need this to relate the models to each other
+        return $this-> belongsTo(Company::class);
+    }
+
 }

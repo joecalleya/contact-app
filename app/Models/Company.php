@@ -18,5 +18,9 @@ class Company extends Model
 
     //only let us update specified cols
     protected $fillable = [ 'name','address','email','website'];
-
+    public function contacts()
+    {
+        // we need this to relate the models to each other
+        return $this-> hasMany(Contact::class);
+    }
 }

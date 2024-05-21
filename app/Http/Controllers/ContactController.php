@@ -1,5 +1,7 @@
 <?php
 
+// this contains the logic to link the data (models) and views.
+
 namespace App\Http\Controllers;
 
 use App\Repositories\CompanyRepository;
@@ -20,6 +22,7 @@ class ContactController extends Controller
         $contacts = Contact::Latest()->get();
         return view('contacts.index' ,  compact('contacts','companies'));
     }
+
     public function show($id)
     {
         $contact = Contact::findOrFail($id);
