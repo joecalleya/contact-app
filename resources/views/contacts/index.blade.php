@@ -37,19 +37,16 @@
 
                 </tbody>
                 </table>
-                <nav class="mt-4">
-                    <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                    </ul>
-                </nav>
+                    {{-- laravel has an inbuilt pagination here using
+                          this function will automatically add the button nav
+                          customisation is done providers/AppserviceProvider
+
+                          * we can edit this template using the vendors
+                            using php artisan vendor: publish
+                          * this creates the pagination template here :
+                          * resources/views/vendor/pagination
+                          * we can then update this layout of the pagination menu --}}
+                          {{$contacts->links() }}
                 </div>
               </div>
             </div>

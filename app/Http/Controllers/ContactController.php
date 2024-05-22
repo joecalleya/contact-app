@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
-//import contracts  model
 use App\Models\Contact;
 class ContactController extends Controller
 {
@@ -18,8 +17,11 @@ class ContactController extends Controller
     public function index(CompanyRepository $company)
     {
         $companies = $this->company->pluck();
-        // here we get the data
-        $contacts = Contact::Latest()->get();
+
+        // here we get the model data from the contacts table.
+        // we also need to use PAGINATION - this is breaking down results into pages
+
+        $contacts = Contact::Latest()->paginate(10);
         return view('contacts.index' ,  compact('contacts','companies'));
     }
 
