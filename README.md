@@ -1,3 +1,26 @@
+
+## General notes
+
+
+# vendors
+
+
+
+# Seeder classes (run with php artisan migrate:fresh --seed / php artisan make:seeder UserSeeder)
+
+these create tables with structure needed to run application . i.e users
+
+# Factories (php artisan make:Model Task -f or php artisan make:factory ContactFactory ) 
+
+these create large amounts of table data for testing the application
+   
+    Factory States - State manipulation methods allow you to define discrete modifications that can be applied to your model factories in any combination. 
+
+    php artisan tinker
+    Task::factory()->tomorrow()->priority()->create()
+
+
+
 ## setup - instll pop
 
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
