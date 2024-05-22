@@ -31,10 +31,15 @@
                 </tr>
                 </thead>
                 <tbody>
-
+                    @forelse ($contacts as $index => $contact)
+                        {{-- show this normally --}}
+                        @include('contacts._contact',['contact' => $contact, 'index' => $index])
+                    @empty
+                        {{-- show this if empty --}}
+                        @include('contacts._empty')
+                    @endforelse
                     {{-- /inbuilt if then else --}}
-                    @each( 'contacts._contact',$contacts ,'contact', 'contacts._empty' )
-
+                    {{-- @each( 'contacts._contact',$contacts ,'contact', 'contacts._empty' ) --}}
                 </tbody>
                 </table>
                     {{-- laravel has an inbuilt pagination here using
@@ -45,8 +50,10 @@
                             using php artisan vendor: publish
                           * this creates the pagination template here :
                           * resources/views/vendor/pagination
-                          * we can then update this layout of the pagination menu --}}
-                          {{$contacts->links() }}
+                          * we can then update this layout of the pagination menu
+                          * use the Appends/withqueryString modifier to use the url info to filter the data using the data.
+                          --}}
+                          {{$contacts->withQueryString()->links()}}
                 </div>
               </div>
             </div>
