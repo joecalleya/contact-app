@@ -61,5 +61,5 @@ class ContactController extends Controller
     {
         // dependency injection we are checking the URL here.
         dd($request->routeIs('contacts.*'));
-        
+    }
 }
