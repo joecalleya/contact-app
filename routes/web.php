@@ -23,11 +23,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-route::controller(ContactController::class)->name('contacts.')->group(function(){
-    Route::get('/contacts', [ContactController::class, 'index'])->name('index');
-    Route::get('/contacts/create', [ContactController::class, 'create'])->name('create');
-    Route::get('/contacts/{id}', [ContactController::class, 'show'])->name('show');
-});
+Route::Post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
+
+Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
+Route::get('/contacts/create', [ContactController::class, 'create'])->name('contacts.create');
+Route::get('/contacts/{id}', [ContactController::class, 'show'])->name('contacts.show');
 
 route::resource('/companies',CompanyController::class);
 route::resources

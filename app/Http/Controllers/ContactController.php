@@ -21,18 +21,24 @@ class ContactController extends Controller
 
         // here we get the model data from the contacts table.
         // we also need to use PAGINATION - this is breaking down results into pages
-        //$contacts = Contact::Latest()->paginate(10);
+        // we can add our where clause data here too?
+        $contacts = Contact::Latest()->where(function ($query
+        ){
+            if($companyId = request()->query("company_id")){
+                $query->where("company_id",$companyId );
+            }
+        })->paginate(10);
 
         // manual pagination
-        $contactsCollection = Contact::Latest()->get();
-        $perPage = 10;
-        $currentPage = request()->query('page',1);
-        $items = $contactsCollection->slice(($currentPage * $perPage) - $perPage, $perPage);
-        $total = $contactsCollection->count();
-        $contacts = new LengthAwarePaginator($items, $total,$perPage, $currentPage,[
-            'path'=>request()->url(),
-            'query'=>request()->query()
-        ]);
+        // $contactsCollection = Contact::Latest()->get();
+        // $perPage = 10;
+        // $currentPage = request()->query('page',1);
+        // $items = $contactsCollection->slice(($currentPage * $perPage) - $perPage, $perPage);
+        // $total = $contactsCollection->count();
+        // $contacts = new LengthAwarePaginator($items, $total,$perPage, $currentPage,[
+        //     'path'=>request()->url(),
+        //     'query'=>request()->query()
+        // ]);
         // navigate to index view , with this data.
         return view('contacts.index' ,  compact('contacts','companies'));
     }
@@ -42,8 +48,18 @@ class ContactController extends Controller
         $contact = Contact::findOrFail($id);
         return view('contacts.show')->with('contact',$contact);
     }
-    public function createContacts()
+    public function create()
     {
-        return view('contacts.create');
+        // we might want to get url with parameters, we can also use it to do other things
+        dd(request()->fullUrl());
+
+        $companies = $this->company->pluck();
+
+        return view('contacts.create',compact('companies'));
     }
+    public function store(Request $request)
+    {
+        // dependency injection we are checking the URL here.
+        dd($request->routeIs('contacts.*'));
+        
 }
