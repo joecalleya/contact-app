@@ -51,7 +51,7 @@ class ContactController extends Controller
     public function create()
     {
         // we might want to get url with parameters, we can also use it to do other things
-        dd(request()->fullUrl());
+        //dd(request()->fullUrl());
 
         $companies = $this->company->pluck();
 
@@ -59,7 +59,44 @@ class ContactController extends Controller
     }
     public function store(Request $request)
     {
+        //validations
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'email' => 'required|email',
+            'phone' => 'nullable',
+            'address' => 'required|string|max:50',
+            'company_id' => 'required|exists:companies,id',
+        ]);
         // dependency injection we are checking the URL here.
-        dd($request->routeIs('contacts.*'));
+        // if ($request->all())
+        //     dd($request->first_name);
+
+        // save data and return veiw
+        Contact::create($request->all());
+        return redirect()->route('contacts.index')->with('message','Contact has been added sucessfully');
+    }
+
+    public function edit($id)
+    {
+        $companies = $this->company->pluck();
+        $contact = Contact::findOrFail($id);
+        return view('contacts.edit', compact('companies', 'contact'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $contact = Contact::findOrFail($id);
+        //validations
+        $request->validate([
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'email' => 'required|email',
+            'phone' => 'nullable',
+            'address' => 'required|string|max:50',
+            'company_id' => 'required|exists:companies,id',
+        ]);
+        $contact->update($request->all());
+        return redirect()->route('contacts.index')->with('message','Contact has been updated sucessfuly');
     }
 }

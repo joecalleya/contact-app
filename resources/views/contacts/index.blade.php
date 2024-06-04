@@ -18,7 +18,11 @@
                       </div>
                     </div>
                   </div>
-                  @include('contacts._filter'  )
+                  @include('contacts._filter')
+                  {{-- sessionvar her --}}
+                  @if ($message = session('message'))
+                    <div class='alert alert-success'>{{ $message }}</div>
+                  @endif
                   <table class="table table-striped table-hover">
                     <thead>
                       <tr>
