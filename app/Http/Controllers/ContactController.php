@@ -18,7 +18,6 @@ class ContactController extends Controller
     public function index(CompanyRepository $company)
     {
         $companies = $this->company->pluck();
-
         // here we get the model data from the contacts table.
         // we also need to use PAGINATION - this is breaking down results into pages
         // we can add our where clause data here too?
@@ -48,14 +47,14 @@ class ContactController extends Controller
         $contact = Contact::findOrFail($id);
         return view('contacts.show')->with('contact',$contact);
     }
+
     public function create()
     {
         // we might want to get url with parameters, we can also use it to do other things
         //dd(request()->fullUrl());
-
         $companies = $this->company->pluck();
-
-        return view('contacts.create',compact('companies'));
+        $contact = new Contact();
+        return view('contacts.create',compact('companies', 'contact'));
     }
     public function store(Request $request)
     {
@@ -99,4 +98,12 @@ class ContactController extends Controller
         $contact->update($request->all());
         return redirect()->route('contacts.index')->with('message','Contact has been updated sucessfuly');
     }
+    public function destroy($id)
+    {
+        $contact = Contact::findOrFail($id);
+        $contact->delete();
+        return redirect()->route('contacts.index')->with('message','Contact has been deleted sucessfuly');
+
+    }
+
 }

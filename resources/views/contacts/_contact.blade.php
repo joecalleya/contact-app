@@ -12,8 +12,14 @@
         <a href='{{route('contacts.edit', $contact->id )}}' class="btn btn-sm btn-circle btn-outline-secondary" title="Edit">
             <i class="fa fa-edit"></i>
         </a>
-        <a href="#" class="btn btn-sm btn-circle btn-outline-danger" title="Delete" onclick="confirm('Are you sure?')">
-            <i class="fa fa-times"></i>
-        </a>
+        <form action='{{route('contacts.destroy', $contact->id )}}'
+            style='display:inline' method='Post' onsubmit="confirm('Are you sure?')">
+            @csrf
+            @method('delete')
+            <button type="submit" class="btn btn-sm btn-circle btn-outline-danger" title="Delete">
+                <i class="fa fa-times"></i>
+            </button>
+        </form>
+
     </td>
 </tr>
