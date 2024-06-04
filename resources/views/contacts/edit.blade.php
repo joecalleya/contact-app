@@ -14,10 +14,11 @@
                   <strong>Edit Contact</strong>
                 </div>
                 <div class="card-body">
-                    <form action={{route('contacts.edit', $contact->id)}} method="POST">
+                    <form action={{route('contacts.update', $contact->id)}} method="POST">
                         {{-- Post requests are blocked by defaut to stop Cross site forgery attacks,
                             we meed to set hidden input var to allow --}}
                         {{-- <input type="hidden" name="_token" value="{{csrf_token()}}"> --}}
+                        @method('PUT')
                         @csrf
                         @include('contacts._form')
 
