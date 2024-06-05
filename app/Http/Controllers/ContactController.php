@@ -8,6 +8,11 @@ use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+
+use SebastianBergmann\CodeUnit\FunctionUnit;
+use function Laravel\Prompts\search;
+
 class ContactController extends Controller
 {
     protected $company;
@@ -18,16 +23,27 @@ class ContactController extends Controller
     public function index(CompanyRepository $company)
     {
         $companies = $this->company->pluck();
+        //logs queries to page
+        //  DB::enableQueryLog();
+        //  dump(DB::getQueryLog());
+
         // here we get the model data from the contacts table.
         // we also need to use PAGINATION - this is breaking down results into pages
         // we can add our where clause data here too?
-        $contacts = Contact::Latest()->where(function ($query
+        $contacts = Contact::Latest()
+            ->where(function ($query
         ){
             if($companyId = request()->query("company_id")){
                 $query->where("company_id",$companyId );
             }
+            })
+            ->where(function($query){
+            if($search = request()->query('search')){
+                $query->where("last_name",'LIKE',"%{$search}");
+                $query->orWhere("first_name",'LIKE',"%{$search}");
+                $query->orWhere("email",'LIKE',"%{$search}");
+            }
         })->paginate(10);
-
         // manual pagination
         // $contactsCollection = Contact::Latest()->get();
         // $perPage = 10;
