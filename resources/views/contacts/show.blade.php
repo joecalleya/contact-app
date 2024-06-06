@@ -60,8 +60,10 @@
                       <div class="form-group row mb-0">
                         <div class="col-md-9 offset-md-3">
                             <a  href="{{route('contacts.edit', $contact->id )}}" class="btn btn-info">Edit</a>
-                            <form action='{{route('contacts.destroy', $contact->id )}}'
-                                style='display:inline' method='Post' onsubmit=" confirm('Are you sure?')">
+                            <form action='{{route('contacts.destroy', ['contact' =>$contact->id
+                                                                    ,'redirect'=>'contacts.index'])}}'
+                                style='display:inline' method='Post'
+                                >
                                 @csrf
                                 @method('delete')
                                 <button type="submit" class="btn btn-outline-danger" title="Delete">

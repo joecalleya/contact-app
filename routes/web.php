@@ -24,13 +24,8 @@ Route::get('/', function () {
 });
 route::resource('/contacts',ContactController::class);
 
-// Route::Post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
-// Route::get('/contacts/{id}/edit', [ContactController::class, 'edit'])->name('contacts.edit');
-// Route::put('/contacts/{id}', [ContactController::class, 'update'])->name('contacts.update');
-// Route::delete('/contacts/{id}', [ContactController::class, 'destroy'])->name('contacts.destroy');
-// Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
-// Route::get('/contacts/create', [ContactController::class, 'create'])->name('contacts.create');
-// Route::get('/contacts/{id}', [ContactController::class, 'show'])->name('contacts.show');
+route::delete('/contacts/{contact}/restore', [ContactController::class , 'restore'])->name('contacts.restore');
+route::delete('/contacts/{contact}/force-delete', [ContactController::class , 'forceDelete'])->name('contacts.force-delete');
 
 route::resource('/companies',CompanyController::class);
 route::resources

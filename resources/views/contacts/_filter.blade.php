@@ -1,8 +1,16 @@
 <div class="card-body">
     <div class="row">
-      <div class="col-md-6"></div>
+      <div class="col-md-6">
+        <div class="row">
+            <div class="col">
+                    <a class="btn {{!request()->query('trash') ? 'text-primary' : 'text-secondary'  }}" href="{{request()->fullUrlWithQuery(['trash' => false])}}">All</a> |
+                    <a class="btn {{request()->query('trash') ? 'text-primary' : 'text-secondary'  }}"  href="{{request()->fullUrlWithQuery(['trash' => true])}}">Trash</a>
+            </div>
+        </div>
+      </div>
       <div class="col-md-6">
         <form>
+            <input type="hidden" name="trash" value="{{request()->query('trash')}}">
             <div class="row">
                 <div class="col">
                   @include('contacts._select')
