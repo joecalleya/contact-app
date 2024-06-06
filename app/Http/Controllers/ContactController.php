@@ -20,6 +20,12 @@ class ContactController extends Controller
     {
         $this->company = new CompanyRepository;
     }
+
+    // this function gets the data on load
+    // here we get the model data from the contacts table.
+    // we also need to use PAGINATION - this is breaking down results into pages
+    // we can add our where clause data here too?
+    // also adding local scope by injecting it into query
     public function index(CompanyRepository $company)
     {
         $companies = $this->company->pluck();
@@ -30,50 +36,37 @@ class ContactController extends Controller
         if(request()->query('trash')){
             $query->onlyTrashed();
         }
-        // here we get the model data from the contacts table.
-        // we also need to use PAGINATION - this is breaking down results into pages
-        // we can add our where clause data here too?
-        $contacts = $query->Latest()->where(function ($query
-            ){
-            if($companyId = request()->query("company_id")){
-                $query->where("company_id",$companyId );
-            }
-            })
-            ->where(function($query){
+
+        $contacts = $query->sortByNameAlpha()->filterByCompany()->where(function($query){
             if($search = request()->query('search')){
                 $query->where("last_name",'LIKE',"%{$search}");
                 $query->orWhere("first_name",'LIKE',"%{$search}");
                 $query->orWhere("email",'LIKE',"%{$search}");
             }
             })->paginate(10);
-        // manual pagination
-        // $contactsCollection = Contact::Latest()->get();
-        // $perPage = 10;
-        // $currentPage = request()->query('page',1);
-        // $items = $contactsCollection->slice(($currentPage * $perPage) - $perPage, $perPage);
-        // $total = $contactsCollection->count();
-        // $contacts = new LengthAwarePaginator($items, $total,$perPage, $currentPage,[
-        //     'path'=>request()->url(),
-        //     'query'=>request()->query()
-        // ]);
+
         // navigate to index view , with this data.
         return view('contacts.index' ,  compact('contacts','companies'));
     }
 
+    //this is the show contact controller
     public function show($id)
     {
         $contact = Contact::findOrFail($id);
         return view('contacts.show')->with('contact',$contact);
     }
 
+    //this is the create contact controller
+    // we might want to get url with parameters, we can also use it to do other things
     public function create()
     {
-        // we might want to get url with parameters, we can also use it to do other things
         //dd(request()->fullUrl());
         $companies = $this->company->pluck();
         $contact = new Contact();
         return view('contacts.create',compact('companies', 'contact'));
     }
+
+    // this funtion controls saving & validating form data
     public function store(Request $request)
     {
         //validations
@@ -94,6 +87,7 @@ class ContactController extends Controller
         return redirect()->route('contacts.index')->with('message','Contact has been added successfully');
     }
 
+    // this function controls the editing of contact info
     public function edit($id)
     {
         $companies = $this->company->pluck();
@@ -101,6 +95,7 @@ class ContactController extends Controller
         return view('contacts.edit', compact('companies', 'contact'));
     }
 
+    // this function will update and validate new contacts
     public function update(Request $request, $id)
     {
         $contact = Contact::findOrFail($id);
@@ -116,9 +111,10 @@ class ContactController extends Controller
         $contact->update($request->all());
         return redirect()->route('contacts.index')->with('message','Contact has been updated successfully');
     }
+
+    // here we can add some functionality to delete items
     public function destroy($id)
     {
-        // here we can add some functionality to restore the deleted item from trash using soft delete
         $contact = Contact::findOrFail($id);
         $contact->delete();
         $redirect = request()->query("redirect");
@@ -126,9 +122,10 @@ class ContactController extends Controller
             ->with('message','Contact has been moved to trash.')
             ->with('undoRoute', $this->getUndoRoute('contacts.restore' , $contact));
     }
+
+    // here we can add some functionality to restore the deleted item from trash using soft delete
     public function restore($id)
     {
-        // here we can add some functionality to restore the deleted item from trash using soft delete
         $contact = Contact::onlyTrashed()->findOrFail($id);
         $contact->restore();
         return back()
@@ -136,17 +133,18 @@ class ContactController extends Controller
             ->with('undoRoute',$this->getUndoRoute('contacts.destroy' , $contact));
     }
 
+    //this controls showing the undo  button in UI
     protected function getUndoRoute($name, $resource){
 
         return request()->missing('undo') ? route($name , [$resource->id, 'undo' => true]) : null;
     }
 
+    // here we can add some functionality to remove permanently the deleted item from trash.
     public function forceDelete($id)
-    {
-        // here we can add some functionality to restore the deleted item from trash using soft delete
-        $contact = Contact::onlyTrashed()->findOrFail($id);
-        $contact->forceDelete();
-        return back()
-            ->with('message','Contact has been permanently deleted');
-    }
+        {
+            $contact = Contact::onlyTrashed()->findOrFail($id);
+            $contact->forceDelete();
+            return back()
+                ->with('message','Contact has been permanently deleted');
+        }
 }
