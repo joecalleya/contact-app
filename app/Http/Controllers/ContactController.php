@@ -37,13 +37,10 @@ class ContactController extends Controller
             $query->onlyTrashed();
         }
 
-        $contacts = $query->sortByNameAlpha()->filterByCompany()->where(function($query){
-            if($search = request()->query('search')){
-                $query->where("last_name",'LIKE',"%{$search}");
-                $query->orWhere("first_name",'LIKE',"%{$search}");
-                $query->orWhere("email",'LIKE',"%{$search}");
-            }
-            })->paginate(10);
+        $contacts = $query->sortByItem('last_name')
+                          ->filterByItem('company_id')
+                          ->searchByItem(['first_name','last_name','email'])
+                          ->paginate(10);
 
         // navigate to index view , with this data.
         return view('contacts.index' ,  compact('contacts','companies'));

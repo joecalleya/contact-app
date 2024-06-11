@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\IndexHint;
 use Illuminate\Notifications\Messages\SimpleMessage;
 
 class Contact extends Model
@@ -22,22 +23,30 @@ class Contact extends Model
     }
 
     public function tasks(){
-
         return $this->hasMany(Task::class);
     }
-    
-    //lets define local scope for sorting
-    public function scopeSortByNameAlpha(Builder $query){
 
-        return $query->orderBy('first_name');
+    //lets define local scope for sorting
+    public function scopeSortByItem(Builder $query, $column){
+        return $query->orderBy($column);
     }
 
     //lets define local scope for filtering by company
-    public function scopeFilterByCompany(Builder $query){
-
-        if($companyId = request()->query("company_id")){
+    public function scopeFilterByItem(Builder $query, string $key){
+        if($companyId = request()->query($key)){
             $query->where("company_id",$companyId );
         }
         return $query;
     }
+
+    public function scopeSearchByItem(Builder $query, array $keys){
+        if($search = request()->query('search')){
+            foreach($keys as $index => $key){
+                $method = $index === 0 ? 'where' : 'orWhere';
+                $query->{$method}($key,'LIKE',"%{$search}");
+            }
+    }
+    return $query;
+    }
+
 }
