@@ -2,18 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AllowedSort;
 use App\Models\Scopes\SimpleSoftDeletes;
-use App\Models\Scopes\SimpleSoftDeleteScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Query\IndexHint;
-use Illuminate\Notifications\Messages\SimpleMessage;
 
 class Contact extends Model
 {
-    use HasFactory , SimpleSoftDeletes;
+    use HasFactory , SimpleSoftDeletes, AllowedSort;
     protected $fillable = [ 'first_name','last_name','email','phone', 'address','company_id'];
 
     // we need this to relate the models to each other
@@ -24,11 +21,6 @@ class Contact extends Model
 
     public function tasks(){
         return $this->hasMany(Task::class);
-    }
-
-    //lets define local scope for sorting
-    public function scopeSortByItem(Builder $query, $column){
-        return $query->orderBy($column);
     }
 
     //lets define local scope for filtering by company

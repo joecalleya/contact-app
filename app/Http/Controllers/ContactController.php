@@ -7,11 +7,6 @@ namespace App\Http\Controllers;
 use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
 use App\Models\Contact;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-
-use SebastianBergmann\CodeUnit\FunctionUnit;
-use function Laravel\Prompts\search;
 
 class ContactController extends Controller
 {
@@ -37,7 +32,7 @@ class ContactController extends Controller
             $query->onlyTrashed();
         }
 
-        $contacts = $query->sortByItem('last_name')
+        $contacts = $query->sortByItem(['first_name','last_name','email'])
                           ->filterByItem('company_id')
                           ->searchByItem(['first_name','last_name','email'])
                           ->paginate(10);

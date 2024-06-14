@@ -45,11 +45,21 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">First Name</th>
-                            <th scope="col">Last Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Company</th>
-                            <th scope="col">Actions</th>
+                            <th scope="col">
+                                {!! sortable("First Name")!!}
+                            </th>
+                            <th scope="col">
+                                {!! sortable("Last Name")!!}
+                            </th>
+                            <th scope="col">
+                                {!! sortable("Email")!!}
+                            </th>
+                            <th scope="col">
+                                {!! sortable("Company")!!}
+                            </th>
+                            <th scope="col">
+                               {!! sortable("Actions")!!}
+                            </th>
                         </tr>
                     </thead>
                 <tbody>
