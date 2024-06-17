@@ -1,26 +1,30 @@
 <?php
+
 namespace App\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 
-trait AllowedSort{
-
-    //this class allows us to apply specific global scope functions to the data
-    public function parseSortDirection(){
-        return strpos(request()->query('sort_by') , '-') === 0 ? 'desc' : 'asc';
+trait AllowedSort
+{
+    public function parseSortDirection($column = null)
+    {
+        return strpos($column ?? request()->query('sort_by'), "-") === 0 ? 'desc' : 'asc';
     }
 
-    //lets us get the column from the URL
-    public function parseSortColumn(){
-        return ltrim(request()->query('sort_by'),'-');
+    public function parseSortColumn($column = null)
+    {
+        return ltrim($column ?? request()->query('sort_by'), "-");
     }
 
-    //lets define local scope for sorting
-    public function scopeSortByItem(Builder $query, array $columns, $defaultColumn=null){
+    public function scopeAllowedSorts(Builder $query, array $columns, $defaultColumn = null)
+    {
         $column = $this->parseSortColumn();
-        if (in_array($column,$columns)){
+        if (in_array($column, $columns)) {
             return $query->orderBy($column, $this->parseSortDirection());
         }
+        if (!$column && $defaultColumn) {
+            return $query->orderBy($this->parseSortColumn($defaultColumn), $this->parseSortDirection($defaultColumn));
+        }
+        return $query;
     }
-
 }

@@ -1,6 +1,7 @@
 <?php
 
 // this contains the logic to link the data (models) and views.
+// route model bindings an be used to pass data to routes
 
 namespace App\Http\Controllers;
 
@@ -32,19 +33,18 @@ class ContactController extends Controller
             $query->onlyTrashed();
         }
 
-        $contacts = $query->sortByItem(['first_name','last_name','email'])
-                          ->filterByItem('company_id')
-                          ->searchByItem(['first_name','last_name','email'])
+        $contacts = $query->allowedSorts(['first_name','last_name','email'], 'id')
+                          ->allowedFilters('company_id')
+                          ->allowedSearch(['first_name','last_name','email'])
                           ->paginate(10);
 
         // navigate to index view , with this data.
         return view('contacts.index' ,  compact('contacts','companies'));
     }
 
-    //this is the show contact controller
-    public function show($id)
+    //this is the show contact controller,  we can pass in the contact model as a parm
+    public function show(Contact $contact)
     {
-        $contact = Contact::findOrFail($id);
         return view('contacts.show')->with('contact',$contact);
     }
 
@@ -80,17 +80,15 @@ class ContactController extends Controller
     }
 
     // this function controls the editing of contact info
-    public function edit($id)
+    public function edit(Contact $contact)
     {
         $companies = $this->company->pluck();
-        $contact = Contact::findOrFail($id);
         return view('contacts.edit', compact('companies', 'contact'));
     }
 
     // this function will update and validate new contacts
-    public function update(Request $request, $id)
+    public function update(Request $request, Contact $contact)
     {
-        $contact = Contact::findOrFail($id);
         //validations
         $request->validate([
             'first_name' => 'required|string|max:50',
@@ -105,9 +103,8 @@ class ContactController extends Controller
     }
 
     // here we can add some functionality to delete items
-    public function destroy($id)
+    public function destroy(Contact $contact)
     {
-        $contact = Contact::findOrFail($id);
         $contact->delete();
         $redirect = request()->query("redirect");
         return ($redirect ? redirect()->route($redirect ): back())
@@ -116,9 +113,8 @@ class ContactController extends Controller
     }
 
     // here we can add some functionality to restore the deleted item from trash using soft delete
-    public function restore($id)
+    public function restore(Contact $contact)
     {
-        $contact = Contact::onlyTrashed()->findOrFail($id);
         $contact->restore();
         return back()
             ->with('message','Contact has been restored from trash.')
@@ -132,9 +128,8 @@ class ContactController extends Controller
     }
 
     // here we can add some functionality to remove permanently the deleted item from trash.
-    public function forceDelete($id)
+    public function forceDelete(Contact $contact)
         {
-            $contact = Contact::onlyTrashed()->findOrFail($id);
             $contact->forceDelete();
             return back()
                 ->with('message','Contact has been permanently deleted');

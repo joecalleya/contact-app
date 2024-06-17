@@ -24,8 +24,13 @@ Route::get('/', function () {
 });
 route::resource('/contacts',ContactController::class);
 
-route::delete('/contacts/{contact}/restore', [ContactController::class , 'restore'])->name('contacts.restore');
-route::delete('/contacts/{contact}/force-delete', [ContactController::class , 'forceDelete'])->name('contacts.force-delete');
+route::delete('/contacts/{contact}/restore', [ContactController::class , 'restore'])
+    ->name('contacts.restore')
+    ->withTrashed();
+
+route::delete('/contacts/{contact}/force-delete', [ContactController::class , 'forceDelete'])
+    ->name('contacts.force-delete')
+    ->withTrashed();
 
 route::resource('/companies',CompanyController::class);
 route::resources

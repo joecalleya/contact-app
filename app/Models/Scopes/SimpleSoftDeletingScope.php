@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class SimpleSoftDeleteScope implements Scope
+class SimpleSoftDeletingScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
-     *  php artisan make:scope SimpleSoftDeleteScope
-     *
-     * we can use this to apply global things to models , here we are only looking for non deleted
      */
     public function apply(Builder $builder, Model $model): void
     {
@@ -25,18 +22,16 @@ class SimpleSoftDeleteScope implements Scope
         $this->addOnlyTrashed($builder);
     }
 
-    //this function allows us to apply this query with global scope
-    public function addWithTrashed(Builder $builder): void
+    public function addWithTrashed(Builder $builder)
     {
-        $builder->macro('withTrashed', function(Builder $builder){
+        $builder->macro('withTrashed', function (Builder $builder) {
             return $builder->withoutGlobalScope($this);
         });
     }
 
-    //this function allows us to apply this query with global scope
-    public function addOnlyTrashed(Builder $builder): void
+    public function addOnlyTrashed(Builder $builder)
     {
-        $builder->macro('onlyTrashed', function(Builder $builder){
+        $builder->macro('onlyTrashed', function (Builder $builder) {
             return $builder->withoutGlobalScope($this)->whereNotNull('deleted_at');
         });
     }
