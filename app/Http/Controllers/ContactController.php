@@ -58,7 +58,7 @@ class ContactController extends Controller
         return view('contacts.create',compact('companies', 'contact'));
     }
 
-    // this funtion controls saving & validating form data
+    // this function controls saving & validating form data
     public function store(Request $request)
     {
         //validations
