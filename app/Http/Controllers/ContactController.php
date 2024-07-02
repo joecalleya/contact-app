@@ -8,6 +8,7 @@ namespace App\Http\Controllers;
 use App\Repositories\CompanyRepository;
 use Illuminate\Http\Request;
 use App\Models\Contact;
+use App\Http\Requests\ContactRequest;
 
 class ContactController extends Controller
 {
@@ -22,8 +23,15 @@ class ContactController extends Controller
     // we also need to use PAGINATION - this is breaking down results into pages
     // we can add our where clause data here too?
     // also adding local scope by injecting it into query
+    // dependency injection we are checking the URL here.
+    // if ($request->all())
+    //     dd($request->first_name);
+    //validation is done using the requests file and then added into function
+
     public function index(CompanyRepository $company)
     {
+        //dd(new \ReflectionClass($company));
+
         $companies = $this->company->pluck();
         //logs queries to page
         //  DB::enableQueryLog();
@@ -59,20 +67,9 @@ class ContactController extends Controller
     }
 
     // this function controls saving & validating form data
-    public function store(Request $request)
+    // validations are also applied here using the requests file used as a parameter
+    public function store(ContactRequest $request)
     {
-        //validations
-        $request->validate([
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'email' => 'required|email',
-            'phone' => 'nullable',
-            'address' => 'required|string|max:50',
-            'company_id' => 'required|exists:companies,id',
-        ]);
-        // dependency injection we are checking the URL here.
-        // if ($request->all())
-        //     dd($request->first_name);
 
         // save data and return view
         Contact::create($request->all());
@@ -87,17 +84,11 @@ class ContactController extends Controller
     }
 
     // this function will update and validate new contacts
-    public function update(Request $request, Contact $contact)
+        // validations are also applied here using the requests file used as a parameter
+
+    public function update(ContactRequest $request, Contact $contact)
     {
         //validations
-        $request->validate([
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'email' => 'required|email',
-            'phone' => 'nullable',
-            'address' => 'required|string|max:50',
-            'company_id' => 'required|exists:companies,id',
-        ]);
         $contact->update($request->all());
         return redirect()->route('contacts.index')->with('message','Contact has been updated successfully');
     }
