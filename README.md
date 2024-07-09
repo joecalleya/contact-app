@@ -2,7 +2,14 @@
 ## General notes
 
 
-# vendors
+# vendors (packages)
+
+we we add things using
+
+    php composer.phar require laravel/fortify
+
+then we use artisan to impliment
+    php artisan vendor:publish --tag=laravel-assets --ansi --force
 
 
 
